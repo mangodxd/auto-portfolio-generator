@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="py-4 py-lg-5 mb-5">
+    <div class="row align-items-center flex-column-reverse flex-lg-row text-center text-lg-start g-5">
+        <div class="col-lg-7 col-xl-8">
+            <span class="text-info fw-semibold mb-2 d-block"><i class="bi bi-terminal me-2"></i>Hello World, I am</span>
+            <h1 class="display-3 fw-black text-white mb-3 text-gradient"><span id="typed-name"></span></h1>
+            
+            {% if user.bio and user.bio != 'None' %}
+            <p class="lead text-light opacity-75 mb-4 pe-lg-5" style="line-height: 1.6;">{{ user.bio }}</p>
+            {% endif %}
+            
+            <div class="d-flex flex-wrap justify-content-center justify-content-lg-start gap-3 mb-4 fs-6">
+                {% if user.company %}
+                <span class="text-light opacity-75"><i class="bi bi-building me-1"></i> {{ user.company }}</span>
+                {% endif %}
+                {% if user.location %}
+                <span class="text-light opacity-75"><i class="bi bi-geo-alt me-1"></i> {{ user.location }}</span>
+                {% endif %}
+                {% if user.blog %}
+                <span>
+                    <a href="{{ user.blog if user.blog.startswith('http') else 'https://' + user.blog }}" target="_blank" class="text-info text-decoration-none"><i class="bi bi-link-45deg"></i> Portfolio / Blog</a>
+                </span>
+                {% endif %}
+                {% if user.twitter_username %}
+                <span>
+                    <a href="https://twitter.com/{{ user.twitter_username }}" target="_blank" class="text-info text-decoration-none"><i class="bi bi-twitter-x"></i> @{{ user.twitter_username }}</a>
+                </span>
+                {% endif %}
+            </div>
+
+            <div class="d-flex flex-wrap justify-content-center justify-content-lg-start gap-3">
+                <a href="#featured-projects" class="btn btn-info rounded-pill px-4 fw-medium text-dark shadow-sm">View Projects</a>
+                <a href="projects.html" class="btn btn-outline-light rounded-pill px-4 fw-medium opacity-75">All Repositories</a>
+            </div>
+        </div>
+        
+        <div class="col-lg-5 col-xl-4">
+            {% if user.avatar_url %}
+            <img src="{{ user.avatar_url }}" alt="{{ user.name }}" class="avatar-img img-fluid" style="width: 250px; height: 250px; object-fit: cover;">
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="row g-4 mb-5 pb-5 border-bottom" style="border-color: rgba(255,255,255,0.05) !important;">
+    <div class="col-lg-6" data-aos="fade-right">
+        <div class="h-100 p-4 bg-transparent border rounded-4 d-flex flex-column justify-content-center" style="border-color: rgba(255,255,255,0.05) !important; background-color: var(--card-bg) !important;">
+            <h4 class="h5 text-white mb-4"><i class="bi bi-activity text-info me-2"></i>GitHub Overview</h4>
+            <div class="row text-center g-3">
+                <div class="col-6 col-md-3">
+                    <h3 class="fw-bold text-white mb-0">{{ user.public_repos }}</h3>
+                    <span class="small text-muted">Repositories</span>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h3 class="fw-bold text-white mb-0">{{ user.followers }}</h3>
+                    <span class="small text-muted">Followers</span>
+                </div>
+                {% if user.total_stars %}
+                <div class="col-6 col-md-3">
+                    <h3 class="fw-bold text-white mb-0">{{ user.total_stars }}</h3>
+                    <span class="small text-muted">Total Stars</span>
+                </div>
+                {% endif %}
+                <div class="col-6 col-md-3">
+                    <h3 class="fw-bold text-white mb-0">{% if user.hireable %}Yes{% else %}No{% endif %}</h3>
+                    <span class="small text-muted">Hireable</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6" data-aos="fade-left" data-aos-delay="100">
+        <div class="h-100 p-4 bg-transparent border rounded-4" style="border-color: rgba(255,255,255,0.05) !important; background-color: var(--card-bg) !important;">
+            <h4 class="h5 text-white mb-3"><i class="bi bi-pie-chart text-info me-2"></i>Top Languages</h4>
+            <div class="chart-container" style="height: 180px;">
+                <canvas id="langChart"></canvas>
+            </div>
+        </div>
+    </div>
+</section>
+
+<main id="featured-projects">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 fw-bold text-white mb-0"><i class="bi bi-star-fill text-warning me-2 fs-4"></i>Featured Projects</h2>
+        <a href="projects.html" class="text-info text-decoration-none small fw-medium">View All <i class="bi bi-arrow-right"></i></a>
+    </div>
+    
+    <div class="row row-cols-1 row-cols-xl-2 g-4">
+        {% for repo in repos %}
+            {% include 'components/repo_card.html' %}
+        {% else %}
+        <div class="col-12">
+            <div class="text-center py-5 rounded-4" style="background-color: var(--card-bg);">
+                <i class="bi bi-inbox display-4 text-muted d-block mb-3"></i>
+                <p class="text-light opacity-75">No featured repositories found. Pin some repositories or gain stars!</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+<script>
+    // Typing effect for User Name
+    var typed = new Typed('#typed-name', {
+        strings: ["{{ user.name or user.login }}", "a Developer", "an Open Source Contributor"],
+        typeSpeed: 60,
+        backSpeed: 40,
+        loop: true,
+        backDelay: 1500,
+        cursorChar: '|',
+        autoInsertCss: true
+    });
+
+    const globalLangsJson = JSON.parse('{{ user.global_languages_json | default("[]") | safe }}');
+    
+    if (globalLangsJson && globalLangsJson.length > 0) {
+        const labels = globalLangsJson.map(item => `${item.language} (${item.percentage}%)`);
+        const data = globalLangsJson.map(item => item.percentage);
+        
+        // Modern UI Colors
+        const colors = ['#38bdf8', '#818cf8', '#34d399', '#fbbf24', '#f87171'];
+        
+        const ctx = document.getElementById('langChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: colors,
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '75%',
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { color: '#94a3b8', boxWidth: 12, font: { family: 'Inter', size: 12 } }
+                    },
+                    tooltip: {
+                        backgroundColor: '#0f172a',
+                        titleColor: '#fff',
+                        bodyColor: '#cbd5e1',
+                        borderColor: '#1e293b',
+                        borderWidth: 1,
+                        padding: 10,
+                        callbacks: { label: function(context) { return ` ${context.raw}%`; } }
+                    }
+                }
+            }
+        });
+    } else {
+        document.getElementById('langChart').parentElement.innerHTML = '<p class="text-muted text-center mt-5">Data unavailable.</p>';
+    }
+</script>
+{% endblock %}

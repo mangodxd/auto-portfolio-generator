@@ -1,0 +1,77 @@
+<div class="col" data-aos="fade-up" data-aos-duration="600" data-aos-anchor-placement="top-bottom">
+    <div class="card h-100 repo-card p-4 d-flex flex-column" style="animation-fill-mode: both;">
+        
+        <div class="d-flex justify-content-between align-items-start mb-3">
+            <h3 class="card-title h5 mb-0 fw-bold" style="max-width: 85%;">
+                <a href="{{ repo.html_url }}" target="_blank" class="text-decoration-none text-white text-truncate d-block">
+                    <i class="bi bi-folder text-info me-2"></i>{{ repo.name }}
+                </a>
+            </h3>
+            <div class="d-flex gap-2">
+                {% if repo.homepage and repo.homepage != '' %}
+                <a href="{{ repo.homepage if repo.homepage.startswith('http') else 'https://' + repo.homepage }}" target="_blank" class="text-light opacity-50 text-decoration-none hover-opacity-100" title="Live Preview">
+                    <i class="bi bi-box-arrow-up-right fs-5"></i>
+                </a>
+                {% endif %}
+                <a href="{{ repo.html_url }}" target="_blank" class="text-light opacity-50 text-decoration-none hover-opacity-100" title="Source Code">
+                    <i class="bi bi-github fs-5"></i>
+                </a>
+            </div>
+        </div>
+        
+        <p class="card-text text-light opacity-75 mb-4 flex-grow-0 fs-6">
+            {{ repo.description or 'No description provided.' }}
+        </p>
+
+        <div class="d-flex flex-wrap gap-3 mb-4 text-light opacity-75 small fw-medium">
+            <span title="Stars"><i class="bi bi-star-fill text-warning me-1"></i>{{ repo.stargazers_count }}</span>
+            <span title="Forks"><i class="bi bi-diagram-2-fill text-info me-1"></i>{{ repo.forks_count }}</span>
+        </div>
+        
+        <div class="mb-4 d-flex flex-wrap gap-2">
+            {% if repo.languages_dict %}
+                {% for lang, size in repo.languages_dict.items() %}
+                <span class="badge badge-language rounded-pill px-2 py-1 fw-medium border-0"><i class="bi bi-circle-fill small me-1 opacity-75"></i>{{ lang }}</span>
+                {% endfor %}
+            {% endif %}
+            
+            {% if repo.topics %}
+                {% for topic in repo.topics[:3] %}
+                <span class="badge badge-soft rounded-pill px-2 py-1 fw-normal border-0">{{ topic }}</span>
+                {% endfor %}
+                {% if repo.topics|length > 3 %}
+                <span class="badge badge-soft rounded-pill px-2 py-1 fw-normal border-0">+{{ repo.topics|length - 3 }}</span>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        {% if repo.extracted_features %}
+        <div class="feature-list mt-auto pt-3 border-top" style="border-color: rgba(255,255,255,0.05) !important;">
+            <p class="text-info small fw-semibold mb-2">Key Highlights</p>
+            <ul class="mb-0 text-light opacity-75 list-unstyled ps-0 small">
+                {% for feature in repo.extracted_features[:3] %}
+                <li class="mb-1 text-truncate"><i class="bi bi-check2 text-info me-2"></i>{{ feature|truncate(60) }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% elif repo.readme_summary %}
+        <div class="readme-preview mt-auto">
+            {{ repo.readme_summary | safe }}
+        </div>
+        {% else %}
+        <div class="mt-auto"></div>
+        {% endif %}
+        
+        <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top small text-light opacity-50" style="border-color: rgba(255,255,255,0.05) !important;">
+            <span>
+                {% if repo.license and repo.license.name %}
+                <i class="bi bi-shield-check me-1"></i> {{ repo.license.spdx_id|upper if repo.license.spdx_id != 'NOASSERTION' else 'Custom' }}
+                {% else %}
+                <i class="bi bi-shield-x me-1"></i> No License
+                {% endif %}
+            </span>
+            <span><i class="bi bi-clock me-1"></i>{{ repo.updated_at[:10] }}</span>
+        </div>
+        
+    </div>
+</div>
