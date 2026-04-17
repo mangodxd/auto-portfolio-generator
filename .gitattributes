@@ -1,0 +1,8 @@
+# Treat HTML files as Python for language statistics
+*.html linguist-language=Python
+
+# Ensure text files are properly handled
+*.md text
+*.py text
+*.json text
+*.html text
