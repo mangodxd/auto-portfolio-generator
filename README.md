@@ -64,6 +64,14 @@ This creates:
 
 Open `output/YOUR_USERNAME/index.html` in your browser to view your portfolio!
 
+## Live Demo
+
+Check out a live example of what your portfolio will look like:
+
+**[View Example Portfolio](https://mangodxd.github.io/auto-portfolio-generator/)**
+
+This is a generated portfolio showcasing the capabilities and modern design of APG.
+
 ## How It Works
 
 ### Data Collection
