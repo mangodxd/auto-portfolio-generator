@@ -1,77 +1,120 @@
-<div class="col" data-aos="fade-up" data-aos-duration="600" data-aos-anchor-placement="top-bottom">
-    <div class="card h-100 repo-card p-4 d-flex flex-column" style="animation-fill-mode: both;">
-        
-        <div class="d-flex justify-content-between align-items-start mb-3">
-            <h3 class="card-title h5 mb-0 fw-bold" style="max-width: 85%;">
-                <a href="{{ repo.html_url }}" target="_blank" class="text-decoration-none text-white text-truncate d-block">
-                    <i class="bi bi-folder text-info me-2"></i>{{ repo.name }}
-                </a>
-            </h3>
-            <div class="d-flex gap-2">
-                {% if repo.homepage and repo.homepage != '' %}
-                <a href="{{ repo.homepage if repo.homepage.startswith('http') else 'https://' + repo.homepage }}" target="_blank" class="text-light opacity-50 text-decoration-none hover-opacity-100" title="Live Preview">
-                    <i class="bi bi-box-arrow-up-right fs-5"></i>
-                </a>
-                {% endif %}
-                <a href="{{ repo.html_url }}" target="_blank" class="text-light opacity-50 text-decoration-none hover-opacity-100" title="Source Code">
-                    <i class="bi bi-github fs-5"></i>
-                </a>
-            </div>
-        </div>
-        
-        <p class="card-text text-light opacity-75 mb-4 flex-grow-0 fs-6">
-            {{ repo.description or 'No description provided.' }}
-        </p>
+<div class="bg-white border border-gray-200 rounded-2xl p-5 h-full flex flex-col hover:border-gray-300 hover:shadow-xl hover:shadow-gray-200/50 hover:-translate-y-1 transition-all duration-400 ease-out cursor-pointer group">
 
-        <div class="d-flex flex-wrap gap-3 mb-4 text-light opacity-75 small fw-medium">
-            <span title="Stars"><i class="bi bi-star-fill text-warning me-1"></i>{{ repo.stargazers_count }}</span>
-            <span title="Forks"><i class="bi bi-diagram-2-fill text-info me-1"></i>{{ repo.forks_count }}</span>
-        </div>
-        
-        <div class="mb-4 d-flex flex-wrap gap-2">
-            {% if repo.languages_dict %}
-                {% for lang, size in repo.languages_dict.items() %}
-                <span class="badge badge-language rounded-pill px-2 py-1 fw-medium border-0"><i class="bi bi-circle-fill small me-1 opacity-75"></i>{{ lang }}</span>
-                {% endfor %}
+    <!-- Header -->
+    <div class="flex items-start justify-between gap-3 mb-3">
+        <h3 class="font-semibold text-gray-900 min-w-0">
+            <a href="{{ repo.html_url }}" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors duration-200 break-all">
+                {{ repo.name }}
+            </a>
+        </h3>
+        <div class="flex gap-1.5 flex-shrink-0">
+            {% if repo.homepage and repo.homepage != '' %}
+            <a href="{{ repo.homepage if repo.homepage.startswith('http') else 'https://' + repo.homepage }}" target="_blank" rel="noopener noreferrer" class="p-1.5 text-gray-400 hover:text-primary rounded-lg hover:bg-blue-50 transition-all duration-200 btn-press" title="Live Demo" aria-label="Live demo link">
+                <svg class="w-4 h-4 transition-transform duration-300 group-hover:scale-110" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.658 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+            </a>
             {% endif %}
-            
-            {% if repo.topics %}
-                {% for topic in repo.topics[:3] %}
-                <span class="badge badge-soft rounded-pill px-2 py-1 fw-normal border-0">{{ topic }}</span>
-                {% endfor %}
-                {% if repo.topics|length > 3 %}
-                <span class="badge badge-soft rounded-pill px-2 py-1 fw-normal border-0">+{{ repo.topics|length - 3 }}</span>
-                {% endif %}
-            {% endif %}
+            <a href="{{ repo.html_url }}" target="_blank" rel="noopener noreferrer" class="p-1.5 text-gray-400 hover:text-primary rounded-lg hover:bg-blue-50 transition-all duration-200 btn-press" title="View on GitHub" aria-label="View on GitHub">
+                <svg class="w-4 h-4 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path></svg>
+            </a>
         </div>
-
-        {% if repo.extracted_features %}
-        <div class="feature-list mt-auto pt-3 border-top" style="border-color: rgba(255,255,255,0.05) !important;">
-            <p class="text-info small fw-semibold mb-2">Key Highlights</p>
-            <ul class="mb-0 text-light opacity-75 list-unstyled ps-0 small">
-                {% for feature in repo.extracted_features[:3] %}
-                <li class="mb-1 text-truncate"><i class="bi bi-check2 text-info me-2"></i>{{ feature|truncate(60) }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% elif repo.readme_summary %}
-        <div class="readme-preview mt-auto">
-            {{ repo.readme_summary | safe }}
-        </div>
-        {% else %}
-        <div class="mt-auto"></div>
-        {% endif %}
-        
-        <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top small text-light opacity-50" style="border-color: rgba(255,255,255,0.05) !important;">
-            <span>
-                {% if repo.license and repo.license.name %}
-                <i class="bi bi-shield-check me-1"></i> {{ repo.license.spdx_id|upper if repo.license.spdx_id != 'NOASSERTION' else 'Custom' }}
-                {% else %}
-                <i class="bi bi-shield-x me-1"></i> No License
-                {% endif %}
-            </span>
-            <span><i class="bi bi-clock me-1"></i>{{ repo.updated_at[:10] }}</span>
-        </div>
-        
     </div>
+
+    <!-- Description -->
+    <p class="text-sm text-gray-500 mb-4 line-clamp-2">{{ repo.description or 'No description provided.' }}</p>
+
+    <!-- Stats Row -->
+    <div class="flex items-center gap-4 text-xs text-gray-400 mb-3">
+        {% if repo.stargazers_count %}
+        <span class="flex items-center gap-1 transition-colors duration-200 hover:text-amber-500">
+            <svg class="w-3.5 h-3.5 transition-transform duration-300 hover:scale-125" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+            {{ repo.stargazers_count }}
+        </span>
+        {% endif %}
+        {% if repo.forks_count %}
+        <span class="flex items-center gap-1 transition-colors duration-200 hover:text-blue-500">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-1M8 5a2 2 0 002 2h4a2 2 0 002-2M8 5a2 2 0 012-2h4a2 2 0 012 2m0 0H6m12 0h.01M9 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            {{ repo.forks_count }}
+        </span>
+        {% endif %}
+        {% if repo.project_type and repo.project_type != 'other' %}
+        <span class="px-2 py-0.5 text-xs font-medium text-gray-500 bg-gray-100 rounded-lg transition-colors duration-200 group-hover:bg-gray-200/70">{{ repo.project_type|title }}</span>
+        {% endif %}
+    </div>
+
+    <!-- Tech Stack -->
+    {% if repo.tech_stack %}
+    <div class="flex flex-wrap gap-1.5 mb-3">
+        {% for tech in repo.tech_stack[:4] %}
+        <span class="px-2 py-0.5 text-xs font-medium text-primary bg-blue-50 rounded-lg transition-all duration-200 group-hover:bg-blue-100/80">{{ tech }}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Languages -->
+    {% if repo.languages_dict %}
+    <div class="flex flex-wrap gap-1.5 mb-3">
+        {% for lang, size in repo.languages_dict.items() %}
+        <span class="px-2 py-0.5 text-xs font-medium text-gray-500 bg-gray-100 rounded-lg transition-all duration-200 group-hover:bg-gray-200/70">{{ lang }}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Features -->
+    {% if repo.extracted_features %}
+    <div class="mt-auto pt-3 border-t border-gray-100">
+        <ul class="space-y-1.5">
+            {% for feature in repo.extracted_features[:2] %}
+            <li class="flex items-start gap-2 text-xs text-gray-500 feature-item">
+                <svg class="w-3.5 h-3.5 mt-0.5 text-emerald-400 flex-shrink-0 transition-transform duration-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                <span class="line-clamp-1">{{ feature|truncate(60) }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% else %}
+    <div class="mt-auto"></div>
+    {% endif %}
+
+    <!-- Quality Signals -->
+    {% if repo.quality_signals and (repo.quality_signals.has_tests or repo.quality_signals.has_ci or repo.quality_signals.has_docs or repo.quality_signals.has_docker) %}
+    <div class="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-gray-100">
+        {% if repo.quality_signals.has_tests %}
+        <span class="flex items-center gap-1 text-xs text-emerald-600 transition-colors duration-200 hover:text-emerald-700">
+            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            Tests
+        </span>
+        {% endif %}
+        {% if repo.quality_signals.has_ci %}
+        <span class="flex items-center gap-1 text-xs text-blue-600 transition-colors duration-200 hover:text-blue-700">
+            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            CI/CD
+        </span>
+        {% endif %}
+        {% if repo.quality_signals.has_docs %}
+        <span class="flex items-center gap-1 text-xs text-purple-600 transition-colors duration-200 hover:text-purple-700">
+            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            Docs
+        </span>
+        {% endif %}
+        {% if repo.quality_signals.has_docker %}
+        <span class="flex items-center gap-1 text-xs text-cyan-600 transition-colors duration-200 hover:text-cyan-700">
+            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            Docker
+        </span>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Footer -->
+    <div class="flex items-center justify-between mt-4 pt-3 border-t border-gray-100 text-xs text-gray-400">
+        <span class="transition-colors duration-200">
+            {% if repo.license and repo.license.name %}
+            {{ repo.license.spdx_id|upper if repo.license.spdx_id != 'NOASSERTION' else 'Custom' }}
+            {% else %}
+            No License
+            {% endif %}
+        </span>
+        <span>{{ repo.updated_at[:10] }}</span>
+    </div>
+
 </div>

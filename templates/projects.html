@@ -1,32 +1,89 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="py-4 mb-5 text-center text-md-start">
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3">
-        <div>
-            <h1 class="display-5 fw-black text-white mb-2 text-gradient">All Projects</h1>
-            <p class="text-light opacity-75 mb-0 fs-5">A complete directory of open-source contributions</p>
-        </div>
-        <div>
-            <span class="badge bg-transparent border text-light px-3 py-2 rounded-pill fs-6 fw-normal" style="border-color: rgba(255,255,255,0.1) !important;">
-                <i class="bi bi-journal-code text-info me-1"></i> {{ repos|length }} Repositories
-            </span>
-        </div>
-    </div>
-</div>
 
-<main class="mb-5 pb-4">
-    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+<!-- Header -->
+<section class="mb-12">
+    <h1 class="reveal text-3xl md:text-4xl font-bold text-gray-900 mb-2">All Projects</h1>
+    <p class="reveal reveal-delay-1 text-gray-400">{{ repos|length }} repositories</p>
+</section>
+
+<!-- Category Tabs -->
+{% if user.categories|length > 1 %}
+<div class="reveal mb-10 flex flex-wrap gap-2">
+    <button onclick="filterProjects('all')" class="category-tab active px-4 py-2 text-sm font-medium rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-all duration-300 cursor-pointer btn-press" data-category="all">
+        All
+    </button>
+    {% for cat, cat_repos in user.categories.items() %}
+    <button onclick="filterProjects('{{ cat }}')" class="category-tab px-4 py-2 text-sm font-medium rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-all duration-300 cursor-pointer btn-press" data-category="{{ cat }}">
+        {{ cat|title }} ({{ cat_repos|length }})
+    </button>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Projects Grid -->
+<section>
+    <div id="projects-grid" class="stagger-children grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {% for repo in repos %}
+        <div data-project-type="{{ repo.project_type or 'other' }}" class="project-card-wrapper">
             {% include 'components/repo_card.html' %}
+        </div>
         {% else %}
-        <div class="col-12">
-            <div class="text-center py-5 rounded-4 shadow-sm" style="background-color: var(--card-bg);">
-                <i class="bi bi-folder-x display-3 d-block text-muted mb-3"></i>
-                <p class="fs-5 text-light opacity-75">No repositories matching the criteria.</p>
-            </div>
+        <div class="col-span-full bg-gray-50 rounded-2xl p-12 text-center text-gray-400">
+            <svg class="w-10 h-10 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7M3 7l9-4 9 4m0 0v10"></path>
+            </svg>
+            <p class="text-sm">No repositories found.</p>
         </div>
         {% endfor %}
     </div>
-</main>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function filterProjects(category) {
+        const cards = document.querySelectorAll('#projects-grid > div[data-project-type]');
+        const tabs = document.querySelectorAll('.category-tab');
+
+        // Update active tab with smooth transition
+        tabs.forEach(tab => {
+            if (tab.dataset.category === category) {
+                tab.classList.add('bg-gray-900', 'text-white', 'border-gray-900', 'shadow-md', 'shadow-gray-900/10');
+                tab.classList.remove('text-gray-600');
+            } else {
+                tab.classList.remove('bg-gray-900', 'text-white', 'border-gray-900', 'shadow-md', 'shadow-gray-900/10');
+                tab.classList.add('text-gray-600');
+            }
+        });
+
+        // Staggered filter animation
+        let visibleIndex = 0;
+        cards.forEach((card) => {
+            const shouldShow = category === 'all' || card.dataset.projectType === category;
+
+            if (shouldShow) {
+                card.style.display = '';
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(16px) scale(0.98)';
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1)';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0) scale(1)';
+                }, visibleIndex * 50);
+                visibleIndex++;
+            } else {
+                card.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(8px) scale(0.98)';
+                setTimeout(() => { card.style.display = 'none'; }, 250);
+            }
+        });
+    }
+
+    // Init: activate "All" tab
+    filterProjects('all');
+</script>
 {% endblock %}

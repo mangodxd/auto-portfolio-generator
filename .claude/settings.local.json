@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python skills/ui-ux-pro-max/scripts/search.py \"portfolio developer clean minimal professional universal\" --design-system -p \"Auto Portfolio Gen\")",
+      "Bash(python -c \"import jinja2, requests, markdown, dotenv\")",
+      "Bash(python generate.py --user mangodxd)",
+      "Bash(python generate.py --user ncttjz)",
+      "Bash(grep -n \"JSON.parse\" templates/projects.html)",
+      "Bash(grep -n \"JSON.parse\" templates/base.html)",
+      "Bash(grep -n \"JSON.parse\" templates/components/repo_card.html)",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"animation smooth micro-interactions loading\" --domain ux -n 5)",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"animation transition transform performance\" --stack html-tailwind)",
+      "Bash(git remote *)",
+      "Bash(git fetch *)",
+      "Bash(git add *)"
+    ]
+  }
+}

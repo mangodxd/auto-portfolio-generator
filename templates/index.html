@@ -1,165 +1,262 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<section class="py-4 py-lg-5 mb-5">
-    <div class="row align-items-center flex-column-reverse flex-lg-row text-center text-lg-start g-5">
-        <div class="col-lg-7 col-xl-8">
-            <span class="text-info fw-semibold mb-2 d-block"><i class="bi bi-terminal me-2"></i>Hello World, I am</span>
-            <h1 class="display-3 fw-black text-white mb-3 text-gradient"><span id="typed-name"></span></h1>
-            
-            {% if user.bio and user.bio != 'None' %}
-            <p class="lead text-light opacity-75 mb-4 pe-lg-5" style="line-height: 1.6;">{{ user.bio }}</p>
-            {% endif %}
-            
-            <div class="d-flex flex-wrap justify-content-center justify-content-lg-start gap-3 mb-4 fs-6">
-                {% if user.company %}
-                <span class="text-light opacity-75"><i class="bi bi-building me-1"></i> {{ user.company }}</span>
-                {% endif %}
-                {% if user.location %}
-                <span class="text-light opacity-75"><i class="bi bi-geo-alt me-1"></i> {{ user.location }}</span>
-                {% endif %}
-                {% if user.blog %}
-                <span>
-                    <a href="{{ user.blog if user.blog.startswith('http') else 'https://' + user.blog }}" target="_blank" class="text-info text-decoration-none"><i class="bi bi-link-45deg"></i> Portfolio / Blog</a>
-                </span>
-                {% endif %}
-                {% if user.twitter_username %}
-                <span>
-                    <a href="https://twitter.com/{{ user.twitter_username }}" target="_blank" class="text-info text-decoration-none"><i class="bi bi-twitter-x"></i> @{{ user.twitter_username }}</a>
-                </span>
-                {% endif %}
-            </div>
 
-            <div class="d-flex flex-wrap justify-content-center justify-content-lg-start gap-3">
-                <a href="#featured-projects" class="btn btn-info rounded-pill px-4 fw-medium text-dark shadow-sm">View Projects</a>
-                <a href="projects.html" class="btn btn-outline-light rounded-pill px-4 fw-medium opacity-75">All Repositories</a>
-            </div>
+<!-- Hero -->
+<section class="mb-16">
+    <div class="flex flex-col items-center text-center">
+        {% if user.avatar_url %}
+        <div class="reveal-scale mb-6">
+            <img src="{{ user.avatar_url }}" alt="{{ user.name or user.login }} profile picture" class="w-28 h-28 rounded-full border-2 border-gray-100 shadow-lg shadow-gray-200/50 transition-all duration-500 ease-out hover:shadow-2xl hover:shadow-gray-300/60 hover:scale-105 hover:border-primary/30">
         </div>
-        
-        <div class="col-lg-5 col-xl-4">
-            {% if user.avatar_url %}
-            <img src="{{ user.avatar_url }}" alt="{{ user.name }}" class="avatar-img img-fluid" style="width: 250px; height: 250px; object-fit: cover;">
+        {% endif %}
+
+        <h1 class="reveal reveal-delay-1 text-4xl md:text-5xl font-bold text-gray-900 mb-3">{{ user.name or user.login }}</h1>
+
+        {% if user.bio and user.bio != 'None' %}
+        <p class="reveal reveal-delay-2 text-gray-500 text-lg max-w-xl mb-6">{{ user.bio }}</p>
+        {% endif %}
+
+        <!-- Info Row -->
+        <div class="reveal reveal-delay-3 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-gray-400 mb-8">
+            {% if user.company %}
+            <span class="flex items-center gap-1.5 transition-colors duration-200 hover:text-gray-600">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m0 0H9m0 0H3.5m0 0H1m5.5 0a2.121 2.121 0 00-3 3M15 7h3m-3 4h3m-3 4h3M4 7h3m0 0V5m0 2v2m0 4v2m0 4v2"></path></svg>
+                {{ user.company }}
+            </span>
             {% endif %}
+            {% if user.location %}
+            <span class="flex items-center gap-1.5 transition-colors duration-200 hover:text-gray-600">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                {{ user.location }}
+            </span>
+            {% endif %}
+            {% if user.blog %}
+            <a href="{{ user.blog if user.blog.startswith('http') else 'https://' + user.blog }}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 text-primary hover:text-primary-hover transition-all duration-200 btn-press">
+                <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.658 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                Website
+            </a>
+            {% endif %}
+            {% if user.twitter_username %}
+            <a href="https://twitter.com/{{ user.twitter_username }}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 text-primary hover:text-primary-hover transition-all duration-200 btn-press">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+                @{{ user.twitter_username }}
+            </a>
+            {% endif %}
+        </div>
+
+        <!-- CTAs -->
+        <div class="reveal reveal-delay-4 flex gap-3">
+            <a href="#featured-projects" class="px-5 py-2.5 text-sm font-medium text-white bg-gray-900 rounded-xl hover:bg-gray-800 transition-all duration-300 hover:shadow-lg hover:shadow-gray-900/20 hover:-translate-y-0.5 btn-press cursor-pointer">View Projects</a>
+            <a href="projects.html" class="px-5 py-2.5 text-sm font-medium text-gray-600 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 hover:border-gray-300 transition-all duration-300 btn-press cursor-pointer">All Repositories</a>
         </div>
     </div>
 </section>
 
-<section class="row g-4 mb-5 pb-5 border-bottom" style="border-color: rgba(255,255,255,0.05) !important;">
-    <div class="col-lg-6" data-aos="fade-right">
-        <div class="h-100 p-4 bg-transparent border rounded-4 d-flex flex-column justify-content-center" style="border-color: rgba(255,255,255,0.05) !important; background-color: var(--card-bg) !important;">
-            <h4 class="h5 text-white mb-4"><i class="bi bi-activity text-info me-2"></i>GitHub Overview</h4>
-            <div class="row text-center g-3">
-                <div class="col-6 col-md-3">
-                    <h3 class="fw-bold text-white mb-0">{{ user.public_repos }}</h3>
-                    <span class="small text-muted">Repositories</span>
-                </div>
-                <div class="col-6 col-md-3">
-                    <h3 class="fw-bold text-white mb-0">{{ user.followers }}</h3>
-                    <span class="small text-muted">Followers</span>
-                </div>
-                {% if user.total_stars %}
-                <div class="col-6 col-md-3">
-                    <h3 class="fw-bold text-white mb-0">{{ user.total_stars }}</h3>
-                    <span class="small text-muted">Total Stars</span>
-                </div>
-                {% endif %}
-                <div class="col-6 col-md-3">
-                    <h3 class="fw-bold text-white mb-0">{% if user.hireable %}Yes{% else %}No{% endif %}</h3>
-                    <span class="small text-muted">Hireable</span>
-                </div>
-            </div>
+<!-- Stats -->
+<section class="mb-16 border-t border-gray-100 pt-12">
+    <div class="reveal stagger-children grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div class="group cursor-default">
+            <div class="text-3xl font-bold text-gray-900 counter transition-transform duration-300 group-hover:scale-110" data-target="{{ user.public_repos }}">0</div>
+            <div class="text-sm text-gray-400 mt-1 transition-colors duration-200 group-hover:text-gray-600">Repositories</div>
         </div>
-    </div>
-    
-    <div class="col-lg-6" data-aos="fade-left" data-aos-delay="100">
-        <div class="h-100 p-4 bg-transparent border rounded-4" style="border-color: rgba(255,255,255,0.05) !important; background-color: var(--card-bg) !important;">
-            <h4 class="h5 text-white mb-3"><i class="bi bi-pie-chart text-info me-2"></i>Top Languages</h4>
-            <div class="chart-container" style="height: 180px;">
-                <canvas id="langChart"></canvas>
-            </div>
+        <div class="group cursor-default">
+            <div class="text-3xl font-bold text-gray-900 counter transition-transform duration-300 group-hover:scale-110" data-target="{{ user.followers }}">0</div>
+            <div class="text-sm text-gray-400 mt-1 transition-colors duration-200 group-hover:text-gray-600">Followers</div>
+        </div>
+        {% if user.total_stars %}
+        <div class="group cursor-default">
+            <div class="text-3xl font-bold text-gray-900 counter transition-transform duration-300 group-hover:scale-110" data-target="{{ user.total_stars }}">0</div>
+            <div class="text-sm text-gray-400 mt-1 transition-colors duration-200 group-hover:text-gray-600">Stars</div>
+        </div>
+        {% endif %}
+        <div class="group cursor-default">
+            <div class="text-3xl font-bold text-gray-900 counter transition-transform duration-300 group-hover:scale-110" data-target="{{ user.repos|default(repos|length) }}">0</div>
+            <div class="text-sm text-gray-400 mt-1 transition-colors duration-200 group-hover:text-gray-600">Featured</div>
         </div>
     </div>
 </section>
 
-<main id="featured-projects">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="h3 fw-bold text-white mb-0"><i class="bi bi-star-fill text-warning me-2 fs-4"></i>Featured Projects</h2>
-        <a href="projects.html" class="text-info text-decoration-none small fw-medium">View All <i class="bi bi-arrow-right"></i></a>
-    </div>
-    
-    <div class="row row-cols-1 row-cols-xl-2 g-4">
-        {% for repo in repos %}
-            {% include 'components/repo_card.html' %}
-        {% else %}
-        <div class="col-12">
-            <div class="text-center py-5 rounded-4" style="background-color: var(--card-bg);">
-                <i class="bi bi-inbox display-4 text-muted d-block mb-3"></i>
-                <p class="text-light opacity-75">No featured repositories found. Pin some repositories or gain stars!</p>
+<!-- Skills Overview -->
+{% if user.skills %}
+<section class="mb-16 border-t border-gray-100 pt-12">
+    <h2 class="reveal text-lg font-semibold text-gray-900 mb-6">Skills & Technologies</h2>
+    <div class="reveal stagger-children grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% for skill in user.skills[:8] %}
+        <div class="flex items-center gap-3 group">
+            <span class="text-sm font-medium text-gray-700 w-24 text-right transition-colors duration-200 group-hover:text-gray-900">{{ skill.name }}</span>
+            <div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-gray-700 to-gray-900 rounded-full skill-bar transition-[width] duration-1000 ease-out" style="width: 0%" data-width="{{ skill.percentage }}%"></div>
             </div>
+            <span class="text-xs text-gray-400 w-10 transition-colors duration-200 group-hover:text-gray-600">{{ skill.percentage }}%</span>
         </div>
         {% endfor %}
     </div>
-</main>
+</section>
+{% endif %}
+
+<!-- Languages Chart -->
+<section class="mb-16 border-t border-gray-100 pt-12">
+    <h2 class="reveal text-lg font-semibold text-gray-900 mb-6">Language Distribution</h2>
+    <div class="reveal-scale bg-gray-50 rounded-2xl p-6 md:p-8 transition-shadow duration-500 hover:shadow-lg hover:shadow-gray-200/40">
+        <div class="relative h-64">
+            <canvas id="langChart"></canvas>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Projects -->
+<section id="featured-projects" class="border-t border-gray-100 pt-12">
+    <div class="reveal flex items-center justify-between mb-8">
+        <h2 class="text-lg font-semibold text-gray-900">Featured Projects</h2>
+        <a href="projects.html" class="text-sm font-medium text-gray-400 hover:text-gray-600 transition-all duration-300 flex items-center gap-1.5 cursor-pointer group btn-press">
+            View All
+            <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+        </a>
+    </div>
+
+    <div class="stagger-children grid grid-cols-1 md:grid-cols-2 gap-5">
+        {% for repo in repos %}
+            {% include 'components/repo_card.html' %}
+        {% else %}
+        <div class="col-span-full bg-gray-50 rounded-2xl p-12 text-center text-gray-400">
+            <svg class="w-10 h-10 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7M3 7l9-4 9 4m0 0v10"></path>
+            </svg>
+            <p class="text-sm">No featured repositories found.</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
 {% endblock %}
 
 {% block scripts %}
-<script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
 <script>
-    // Typing effect for User Name
-    var typed = new Typed('#typed-name', {
-        strings: ["{{ user.name or user.login }}", "a Developer", "an Open Source Contributor"],
-        typeSpeed: 60,
-        backSpeed: 40,
-        loop: true,
-        backDelay: 1500,
-        cursorChar: '|',
-        autoInsertCss: true
-    });
+    // Smooth counter animation with spring easing
+    function animateCounters() {
+        document.querySelectorAll('.counter').forEach((counter, index) => {
+            const target = +counter.dataset.target;
+            const duration = 1400;
+            const delay = index * 80;
+            const start = performance.now() + delay;
 
-    const globalLangsJson = JSON.parse('{{ user.global_languages_json | default("[]") | safe }}');
-    
-    if (globalLangsJson && globalLangsJson.length > 0) {
-        const labels = globalLangsJson.map(item => `${item.language} (${item.percentage}%)`);
-        const data = globalLangsJson.map(item => item.percentage);
-        
-        // Modern UI Colors
-        const colors = ['#38bdf8', '#818cf8', '#34d399', '#fbbf24', '#f87171'];
-        
-        const ctx = document.getElementById('langChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: data,
-                    backgroundColor: colors,
-                    borderWidth: 0,
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '75%',
-                plugins: {
-                    legend: {
-                        position: 'right',
-                        labels: { color: '#94a3b8', boxWidth: 12, font: { family: 'Inter', size: 12 } }
-                    },
-                    tooltip: {
-                        backgroundColor: '#0f172a',
-                        titleColor: '#fff',
-                        bodyColor: '#cbd5e1',
-                        borderColor: '#1e293b',
-                        borderWidth: 1,
-                        padding: 10,
-                        callbacks: { label: function(context) { return ` ${context.raw}%`; } }
-                    }
+            function update(now) {
+                if (now < start) {
+                    requestAnimationFrame(update);
+                    return;
                 }
+                const elapsed = now - start;
+                const progress = Math.min(elapsed / duration, 1);
+                // Spring-like easing: starts fast, slows, slight overshoot
+                const eased = 1 - Math.pow(1 - progress, 4);
+                counter.textContent = Math.round(eased * target);
+                if (progress < 1) requestAnimationFrame(update);
+            }
+            requestAnimationFrame(update);
+        });
+    }
+
+    // Skill bar animation with stagger
+    function animateSkillBars() {
+        document.querySelectorAll('.skill-bar').forEach((bar, i) => {
+            setTimeout(() => {
+                bar.style.width = bar.dataset.width;
+            }, i * 60);
+        });
+    }
+
+    // Observe stats section for counter trigger
+    const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateCounters();
+                statsObserver.unobserve(entry.target);
             }
         });
-    } else {
-        document.getElementById('langChart').parentElement.innerHTML = '<p class="text-muted text-center mt-5">Data unavailable.</p>';
+    }, { threshold: 0.3 });
+
+    const statsSection = document.querySelector('.counter')?.closest('section');
+    if (statsSection) statsObserver.observe(statsSection);
+
+    // Observe skills section for bar animation
+    const skillsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                setTimeout(animateSkillBars, 200);
+                skillsObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.3 });
+
+    const skillsSection = document.querySelector('.skill-bar')?.closest('section');
+    if (skillsSection) skillsObserver.observe(skillsSection);
+
+    // Languages Chart with smooth entrance
+    const langChartCanvas = document.getElementById('langChart');
+    if (langChartCanvas) {
+        const ctx = langChartCanvas.getContext('2d');
+        const langData = JSON.parse('{{ user.lang_data_json | safe }}' || '{}');
+
+        if (Object.keys(langData).length > 0) {
+            const labels = Object.keys(langData);
+            const data = Object.values(langData);
+
+            const colors = [
+                '#2563eb', '#7c3aed', '#db2777', '#d97706', '#059669',
+                '#0891b2', '#4f46e5', '#0d9488', '#ea580c', '#6366f1'
+            ];
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors.slice(0, labels.length),
+                        borderColor: '#f3f4f6',
+                        borderWidth: 3,
+                        hoverBorderWidth: 0,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#6b7280',
+                                padding: 16,
+                                font: { size: 13, weight: '500' },
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                            titleFont: { size: 13, weight: '600' },
+                            bodyFont: { size: 12 },
+                            padding: 10,
+                            cornerRadius: 8,
+                            displayColors: true,
+                            boxPadding: 4
+                        }
+                    },
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true,
+                        duration: 1200,
+                        easing: 'easeOutQuart'
+                    },
+                    hover: {
+                        animationDuration: 300
+                    }
+                }
+            });
+        }
     }
 </script>
 {% endblock %}
